@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+
+
+<AnchorPane
+        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+        prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
+        xmlns:fx="http://javafx.com/fxml/1" fx:controller="ai.controller.MainSceneController">
+    <children>
+        <Canvas fx:id="canvas" width="320.0" height="320.0" style="-fx-border-color: black;" onMouseDragged="#onMouseDragged"/>
+        <Pane layoutX="319.0" prefHeight="400.0" prefWidth="281.0">
+            <children>
+                <ScrollPane layoutX="41.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0">
+                    <content>
+                        <TextArea fx:id="resPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                    </content>
+                </ScrollPane>
+                <Button layoutX="104.0" layoutY="299.0" mnemonicParsing="false" onAction="#save"  text="Сохранить" />
+                <Button layoutX="109.0" layoutY="340.0" mnemonicParsing="false" onAction="#learn"  text="Обучить" />
+                <Button layoutX="109.0" layoutY="380.0" mnemonicParsing="false" onAction="#test"  text="test" />
+                <TextField fx:id="symbol" layoutX="67.0" layoutY="264.0" />
+            </children>
+        </Pane>
+        <Pane layoutY="318.0" prefHeight="83.0" prefWidth="320.0">
+            <children>
+                <Button onAction="#punish" layoutX="127.0" layoutY="29.0" mnemonicParsing="false" text="Наказать" textFill="#9e2d2d" />
+                <Button onAction="#clear" layoutX="240.0" layoutY="29.0" mnemonicParsing="false" text="Очистить" textFill="#231b6b" />
+                <Button onAction="#recognize" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" text="Распознать" textFill="#338368" />
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>
