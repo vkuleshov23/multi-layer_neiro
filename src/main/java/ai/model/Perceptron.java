@@ -1,16 +1,20 @@
 package ai.model;
 
+import ai.util.Consts;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class Perceptron {
 
-    protected final String perceptronSymbol;
+    protected double weight;
 
-    protected final double weight;
+    public Perceptron() {
+        this.weight =  (Math.random() * (Consts.maxNewWeight - Consts.minNewWeight)) + Consts.minNewWeight;
+    }
 
+    public String toString() {
+        return String.valueOf(weight);
+    }
 }

@@ -32,12 +32,12 @@ public class MainSceneController {
     @FXML
     private Canvas canvas;
     private final NeiroOld neiroOld;
+
+    private final Neiro neiro;
     private final WritingPixels writingPixels;
     private final ImageService imageService;
 
     private final NeiroLearning neiroLearning;
-
-    private final Neiro neiro;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -88,7 +88,8 @@ public class MainSceneController {
 
     private  void predict(int[][] bitMap) {
         double referenceSum = imageService.getPixelSum(bitMap);
-        List<Pair<String, Double>> predicts = neiroOld.getPredicts(bitMap, referenceSum);
+//        List<Pair<String, Double>> predicts = neiroOld.getPredicts(bitMap, referenceSum);
+        List<Pair<String, Double>> predicts = neiro.predict(bitMap, referenceSum);
         resPane.clear();
         predicts.forEach(p -> resPane.appendText(p.getKey() + " = " + String.format("%.5f",p.getValue()) + "\n"));
     }

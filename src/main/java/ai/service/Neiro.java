@@ -1,44 +1,44 @@
 package ai.service;
 
-import ai.model.Layer;
-import ai.model.Perceptron;
+import ai.model.SymbolNeuralNet;
 import ai.util.Consts;
+import javafx.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Getter
+@Setter
 public class Neiro {
 
-    private final Logger logger = LoggerFactory.getLogger(Neiro.class);
-    private final LinkedList<Layer> layers = new LinkedList<>();
+    private static final Logger logger = LoggerFactory.getLogger(Neiro.class);
+
+    private final List<SymbolNeuralNet> symbolNeuralNets = new ArrayList<>();
+
+    private static final Comparator<Pair<String, Double>> comparator = (double1, double2) -> double2.getValue().compareTo(double1.getValue());
 
     public Neiro() {
-        if (Consts.layersCount < 1) return;
-        layers.addLast(new Layer(Consts.xSize,Consts.ySize));
-        for (int i = 0; i < Consts.layersCount-1; i++) {
-            layers.addLast(new Layer(layers.getLast()));
+        for (String symbol : Consts.symbols) {
+            symbolNeuralNets.add(new SymbolNeuralNet(symbol));
         }
     }
 
+    public List<Pair<String, Double>> predict(int[][] bitMap, double referenceSum) {
+        return this.symbolNeuralNets.stream().map(
+                        net -> new Pair<>(net.getSymbol(), net.predict(bitMap, referenceSum)))
+                .sorted(comparator).toList();
+    }
 
     public void test() {
-        for (Layer layer : layers) {
-            for (List<Perceptron> perceptrons : layer.getPerceptronsMap().values()) {
-                logger.info(String.valueOf(perceptrons.size()));
-//                logger.info(String.valueOf(layer.getHeight()));
-//                logger.info(String.valueOf(layer.getWidth()));
-            }
-            logger.info("--");
-
-            for (List<Double> predicts : layer.getPredicts().values()) {
-                logger.info(String.valueOf(predicts.size()));
-                predicts.forEach(predict -> logger.info(String.valueOf(predict)));
-            }
-            logger.info("--");
+        for (SymbolNeuralNet net : this.symbolNeuralNets) {
+            System.out.println(net);
         }
     }
 }

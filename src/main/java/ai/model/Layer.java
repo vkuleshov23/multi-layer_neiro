@@ -1,98 +1,116 @@
 package ai.model;
 
-import ai.util.Consts;
-import ai.util.NewNeiroCreator;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
+@Setter
 public class Layer {
 
     private static final Logger logger = LoggerFactory.getLogger(Layer.class);
 
-    private final Map<String, List<Perceptron>> perceptronsMap;
+    protected final List<Perceptron[]> perceptrons = new ArrayList<>();
 
-    private final int width;
+    protected Layer prevLayer;
 
-    private final int height;
+    protected Layer nextLayer;
 
-    private final Core core = new Core(Consts.coreStep,Consts.coreStep);
+    protected int pSize;
 
-    private double activation(double s) {
-        return 1 / (1 + (Math.exp(-s)));
+    public Layer(int pSize, Layer prevLayer) {
+        this.prevLayer = prevLayer;
+        prevLayer.setNextLayer(this);
+        createPerceptrons(pSize);
     }
 
-    public Layer(int height, int width) {
-        this.perceptronsMap = NewNeiroCreator.createPerceptrons(width*height);
-        this.width = width;
-        this.height = height;
+    public Layer(int pSize) {
+        this.pSize = pSize;
     }
 
-    public Layer(Layer prevLayer) {
-        this(prevLayer.getHeight()/2, prevLayer.getWidth()/2);
-    }
-
-    public Map<String, List<Double>> getPredicts() {
-        Map<String, List<Double>> predicts = new HashMap<>();
-        for (String symbol: perceptronsMap.keySet()) {
-            predicts.put(symbol, getPredicts(perceptronsMap.get(symbol)));
-        }
-        return predicts;
-    }
-
-    private List<Double> getPredicts(List<Perceptron> perceptrons) {
-        List<Double> predicts = new ArrayList<>();
-        int i = 0;
-        for (int x = 0; x < height; x += Consts.coreStep) {
-            for (int y = 0; y < width; y += Consts.coreStep) {
-                fillCore(perceptrons, x, y);
-                predicts.add(activation(core.getWeight()));
+    protected void createPerceptrons(int pSize) {
+        this.pSize = pSize;
+        for (int i = 0; i < pSize; i++) {
+            Perceptron[] ps = new Perceptron[prevLayer.pSize];
+            for (int j = 0; j < prevLayer.pSize; j++) {
+                ps[j] = new Perceptron();
             }
+            perceptrons.add(ps);
         }
-        return predicts;
     }
 
-    private void fillCore(List<Perceptron> perceptrons, int x, int y) {
-        double[] params = new double[core.getX() * core.getY()];
-        for (int i = 0; i < Consts.coreStep; i++) {
-            for (int j = 0; j < Consts.coreStep; j++) {
-                params[i* Consts.coreStep + j] = perceptrons.get((x + i) * width + y + j).getWeight();
-            }
-        }
-        core.clear();
-        core.setParams(params);
+    public double[] predict(double[] input) {
+        double[] out = activation(sums(input));
+        return nextLayer.predict(out);
     }
 
-    public double loss(double[] predicts, double[] expected) {
-        double[] softMaxPredicts = softMax(predicts);
+    public double[] learn(double[] input, double[] expected) {
+        double[] out = activation(sums(input));
+        return nextLayer.learn(out, expected);
+    }
+
+    protected double[] sums(double[] input) {
+        double[] sums = new double[pSize];
+        for (int i = 0; i < pSize; i++) {
+            sums[i] = sum(perceptrons.get(i), input);
+        }
+        return sums;
+    }
+
+    protected double sum(Perceptron[] ps, double[] input) {
         double sum = 0.0;
-        for (int x = 0; x < softMaxPredicts.length; x++) {
-            sum += Math.abs(expected[x] - softMaxPredicts[x]);
+        for (int i = 0; i < prevLayer.pSize; i++) {
+            sum += ps[i].getWeight() * input[i];
         }
         return sum;
     }
 
-    public double[] softMax(double[] predicts) {
-        double sumExp = getSumExp(predicts);
-        double[] res = new double[predicts.length];
-        for (int x = 0; x < predicts.length; x++) {
-            res[x] += Math.exp(predicts[x]) / sumExp;
+    public double[] activation(double[] sums) {
+        double[] res = new double[sums.length];
+        for (int i = 0; i < sums.length; i++) {
+            res[i] = activation(sums[i]);
         }
         return res;
     }
 
-    protected double getSumExp(double[] predicts) {
-        double sum = 0.0;
-        for (double predict : predicts) {
-            sum += Math.exp(predict);
+    public double activation(double sums) {
+        return 1 / (1 + Math.exp(-sums));
+    }
+
+    public double[] derivativeActivation(double[] weights) {
+        double[] res = new double[weights.length];
+        for (int i = 0; i < weights.length; i++) {
+            res[i] = derivativeActivation(weights[i]);
         }
-        return sum;
+        return res;
+    }
+
+    public double derivativeActivation(double weight) {
+        return activation(weight) - (1 - activation(weight));
+    }
+
+    protected double[] reversePropagation(double[] expected, double[] input, double[] out) {
+        double[]
+    }
+
+    public String toString() {
+        String res = this.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this)) + " | ";
+        if (prevLayer != null) {
+            res += prevLayer.getClass().getName() + "(PREV)@" + Integer.toHexString(System.identityHashCode(prevLayer)) + " | ";
+        } else {
+            res += "null | ";
+        }
+        if (nextLayer != null) {
+            res += nextLayer.getClass().getName() + "(NEXT)@" + Integer.toHexString(System.identityHashCode(nextLayer));
+        } else {
+            res += "null | ";
+        }
+        res += " -- " + perceptrons.size();
+        return res;
     }
 
 }
