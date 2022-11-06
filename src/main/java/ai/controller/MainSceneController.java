@@ -76,9 +76,13 @@ public class MainSceneController {
 
     public void punish(ActionEvent actionEvent) {
         try {
+//            int[][] bitMap = getBitMap();
+//            neiroOld.prise(bitMap, symbol.getText());
+//            neiroOld.print();
+//            predict(bitMap);
             int[][] bitMap = getBitMap();
-            neiroOld.prise(bitMap, symbol.getText());
-            neiroOld.print();
+            double referenceSum = imageService.getPixelSum(bitMap);
+            neiro.learn(bitMap, referenceSum, symbol.getText());
             predict(bitMap);
             logger.info("PUNISHED");
         } catch (Exception e) {
@@ -103,7 +107,7 @@ public class MainSceneController {
         writingPixels.printPixel(mouseEvent);
     }
 
-    public void learn(ActionEvent actionEvent) {
+    public void learn(ActionEvent actionEvent) throws Exception {
         eventPublisher.publishEvent(new LearnEvent(this.neiroOld));
         logger.info("LEARNED");
 

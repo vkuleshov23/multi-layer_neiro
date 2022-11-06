@@ -20,7 +20,9 @@ public class Consts {
 
     public static double step = 0.01;
 
-    public static double rate = 0.2;
+    public static double rate = 0.7;
+
+    public static double speed = 0.4;
 
     public static double wrong_threshold = 0.0;
 

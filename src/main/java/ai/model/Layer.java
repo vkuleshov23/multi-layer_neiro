@@ -1,11 +1,13 @@
 package ai.model;
 
+import ai.util.Consts;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -15,6 +17,8 @@ public class Layer {
     private static final Logger logger = LoggerFactory.getLogger(Layer.class);
 
     protected final List<Perceptron[]> perceptrons = new ArrayList<>();
+
+    protected final List<LinkedList<double[]>> deltas = new ArrayList<>();
 
     protected Layer prevLayer;
 
@@ -40,6 +44,7 @@ public class Layer {
                 ps[j] = new Perceptron();
             }
             perceptrons.add(ps);
+            deltas.add(new LinkedList<>());
         }
     }
 
@@ -49,8 +54,53 @@ public class Layer {
     }
 
     public double[] learn(double[] input, double[] expected) {
-        double[] out = activation(sums(input));
-        return nextLayer.learn(out, expected);
+        double[] newInput = sums(input);
+        double[] out = activation(newInput);
+        double[] sigma = reversePropagation(expected, newInput, out);
+        adjustWeights(newInput, sigma);
+        return sigma;
+    }
+
+
+    protected double[] reversePropagation(double[] expected, double[] input, double[] out) {
+        double[] sigmasOut = nextLayer.learn(out, expected);
+        double[] sigmas = new double[pSize];
+            for (int j = 0; j < pSize; j++) {
+                for (int i = 0; i < sigmasOut.length; i++) {
+                    sigmas[j] += nextLayer.getPerceptrons().get(i)[j].getWeight() * sigmasOut[i];
+                }
+            sigmas[j] *= derivativeActivation(input[j]);
+            }
+        return sigmas;
+    }
+
+    protected void adjustWeights(double[] out, double[] sigma) {
+        double[] dels = new double[prevLayer.pSize];
+        for (int i = 0; i < sigma.length; i++) {
+            Perceptron[] ps = perceptrons.get(i);
+            double[] prevDels = getLastDeltas(i);
+            for (int j = 0; j < ps.length ; j++) {
+                dels[j] = ((1-Consts.rate) * Consts.speed * (sigma[i] * out[i])) + (Consts.rate * prevDels[j]);
+                ps[j].setWeight(ps[j].getWeight() + dels[j]);
+            }
+            setLastDeltas(i, dels);
+        }
+    }
+
+    protected double[] getLastDeltas(int i) {
+        try {
+            return deltas.get(i).getLast();
+        } catch (Exception e) {
+            return new double[perceptrons.get(0).length];
+        }
+    }
+
+    protected void setLastDeltas(int i, double[] dels) {
+        LinkedList<double[]> iDeltas = deltas.get(i);
+        if(iDeltas.size() > 10) {
+            iDeltas.removeFirst();
+        }
+        iDeltas.addLast(dels);
     }
 
     protected double[] sums(double[] input) {
@@ -77,8 +127,8 @@ public class Layer {
         return res;
     }
 
-    public double activation(double sums) {
-        return 1 / (1 + Math.exp(-sums));
+    public double activation(double sum) {
+        return 1 / (1 + Math.exp(-sum));
     }
 
     public double[] derivativeActivation(double[] weights) {
@@ -93,9 +143,6 @@ public class Layer {
         return activation(weight) - (1 - activation(weight));
     }
 
-    protected double[] reversePropagation(double[] expected, double[] input, double[] out) {
-        double[]
-    }
 
     public String toString() {
         String res = this.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this)) + " | ";

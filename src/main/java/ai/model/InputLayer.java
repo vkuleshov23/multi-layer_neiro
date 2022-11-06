@@ -1,5 +1,6 @@
 package ai.model;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 public class InputLayer extends Layer {
@@ -10,6 +11,10 @@ public class InputLayer extends Layer {
 
     public double[] predictSymbol(int[][] bitmap) {
         return this.nextLayer.predict(bitMapToArray(bitmap));
+    }
+
+    public double[] learnSymbol(int[][] bitmap, double[] expected) {
+        return this.nextLayer.learn(bitMapToArray(bitmap), expected);
     }
 
     private double[] bitMapToArray(int[][] bitMap) {

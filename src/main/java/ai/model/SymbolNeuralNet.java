@@ -6,7 +6,9 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -30,8 +32,24 @@ public class SymbolNeuralNet {
         layers.add(new OutputLayer(layer));
     }
 
-    public double[] predict(int[][] bitmap, double referenceSum) {
-        return getInputLayer().predictSymbol(bitmap);
+    public double predict(int[][] bitmap, double referenceSum) {
+        return Arrays.stream(getInputLayer().predictSymbol(bitmap)).sum();
+    }
+
+    public double learn(int[][] bitmap, double referenceSum, String writtenSymbol) {
+        return Arrays.stream(getInputLayer().learnSymbol(bitmap, createExpected(writtenSymbol))).sum();
+    }
+
+    private double[] createExpected(String writtenSymbol) {
+        double[] expected = new double[Consts.symbols.length];
+        for (int i = 0; i < expected.length; i++) {
+            if (Objects.equals(Consts.symbols[i], writtenSymbol)) {
+                expected[i] = 1.0;
+            } else {
+                expected[i] = 0.0;
+            }
+        }
+        return expected;
     }
 
     public InputLayer getInputLayer() {

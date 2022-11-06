@@ -36,6 +36,12 @@ public class Neiro {
                 .sorted(comparator).toList();
     }
 
+    public List<Pair<String, Double>> learn(int[][] bitMap, double referenceSum, String symbol) {
+        return this.symbolNeuralNets.stream().map(
+                        net -> new Pair<>(net.getSymbol(), net.learn(bitMap, referenceSum, symbol)))
+                .sorted(comparator).toList();
+    }
+
     public void test() {
         for (SymbolNeuralNet net : this.symbolNeuralNets) {
             System.out.println(net);
