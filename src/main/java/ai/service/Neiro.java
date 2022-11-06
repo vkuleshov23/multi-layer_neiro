@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -20,31 +21,31 @@ public class Neiro {
 
     private static final Logger logger = LoggerFactory.getLogger(Neiro.class);
 
-    private final List<SymbolNeuralNet> symbolNeuralNets = new ArrayList<>();
+    private final SymbolNeuralNet symbolNeuralNet;
 
     private static final Comparator<Pair<String, Double>> comparator = (double1, double2) -> double2.getValue().compareTo(double1.getValue());
 
     public Neiro() {
-        for (String symbol : Consts.symbols) {
-            symbolNeuralNets.add(new SymbolNeuralNet(symbol));
-        }
+        symbolNeuralNet = new SymbolNeuralNet();
     }
 
     public List<Pair<String, Double>> predict(int[][] bitMap, double referenceSum) {
-        return this.symbolNeuralNets.stream().map(
-                        net -> new Pair<>(net.getSymbol(), net.predict(bitMap, referenceSum)))
-                .sorted(comparator).toList();
+       return toRes(this.symbolNeuralNet.predict(bitMap, referenceSum));
     }
 
     public List<Pair<String, Double>> learn(int[][] bitMap, double referenceSum, String symbol) {
-        return this.symbolNeuralNets.stream().map(
-                        net -> new Pair<>(net.getSymbol(), net.learn(bitMap, referenceSum, symbol)))
-                .sorted(comparator).toList();
+        return toRes(this.symbolNeuralNet.learn(bitMap, referenceSum, symbol));
+    }
+
+    private List<Pair<String, Double>> toRes(double[] predict) {
+        List<Pair<String, Double>> predicts = new LinkedList<>();
+        for (int i = 0; i < predict.length; i++) {
+            predicts.add(new Pair<>(Consts.symbols[i], predict[i]));
+        }
+        return predicts.stream().sorted(comparator).toList();
     }
 
     public void test() {
-        for (SymbolNeuralNet net : this.symbolNeuralNets) {
-            System.out.println(net);
-        }
+        System.out.println(symbolNeuralNet);
     }
 }

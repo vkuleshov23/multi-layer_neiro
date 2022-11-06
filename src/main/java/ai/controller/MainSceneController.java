@@ -1,5 +1,6 @@
 package ai.controller;
 
+import Jama.Matrix;
 import ai.event.LearnEvent;
 import ai.service.*;
 import javafx.event.ActionEvent;

@@ -1,14 +1,11 @@
 package ai.model;
 
+import Jama.Matrix;
 import ai.util.Consts;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -16,9 +13,9 @@ public class Layer {
 
     private static final Logger logger = LoggerFactory.getLogger(Layer.class);
 
-    protected final List<Perceptron[]> perceptrons = new ArrayList<>();
+    protected final Matrix perceptrons;
 
-    protected final List<LinkedList<double[]>> deltas = new ArrayList<>();
+    protected final Matrix deltas;
 
     protected Layer prevLayer;
 
@@ -27,102 +24,94 @@ public class Layer {
     protected int pSize;
 
     public Layer(int pSize, Layer prevLayer) {
+        this.pSize = pSize;
         this.prevLayer = prevLayer;
         prevLayer.setNextLayer(this);
-        createPerceptrons(pSize);
+        perceptrons = new Matrix(this.pSize, prevLayer.pSize);
+        deltas = new Matrix(prevLayer.pSize, this.pSize);
+        randomizeMatrix();
     }
 
-    public Layer(int pSize) {
-        this.pSize = pSize;
-    }
-
-    protected void createPerceptrons(int pSize) {
-        this.pSize = pSize;
-        for (int i = 0; i < pSize; i++) {
-            Perceptron[] ps = new Perceptron[prevLayer.pSize];
-            for (int j = 0; j < prevLayer.pSize; j++) {
-                ps[j] = new Perceptron();
+    protected void randomizeMatrix() {
+        for (int i = 0; i < perceptrons.getRowDimension(); i++) {
+            for (int j = 0; j < perceptrons.getColumnDimension(); j++) {
+                perceptrons.set(i, j, (Math.random() * (Consts.maxNewWeight - Consts.minNewWeight)) + Consts.minNewWeight);
             }
-            perceptrons.add(ps);
-            deltas.add(new LinkedList<>());
         }
     }
 
-    public double[] predict(double[] input) {
-        double[] out = activation(sums(input));
+    public Layer(int pSize) {
+        perceptrons = null;
+        deltas = null;
+        this.pSize = pSize;
+    }
+
+    public Matrix predict(Matrix input) {
+        Matrix out = activation(sum(input));
         return nextLayer.predict(out);
     }
 
-    public double[] learn(double[] input, double[] expected) {
-        double[] newInput = sums(input);
-        double[] out = activation(newInput);
-        double[] sigma = reversePropagation(expected, newInput, out);
-        adjustWeights(newInput, sigma);
+    public Matrix learn(Matrix input, Matrix expected) {
+        Matrix newInput = sum(input);
+        Matrix out = activation(newInput);
+        Matrix sigma = reversePropagation(expected, newInput, out);
+//        adjustWeights(newInput, sigma);
         return sigma;
     }
 
 
-    protected double[] reversePropagation(double[] expected, double[] input, double[] out) {
-        double[] sigmasOut = nextLayer.learn(out, expected);
+    protected Matrix reversePropagation(Matrix expected, Matrix input, Matrix out) {
+        Matrix sigmasOut = nextLayer.learn(out, expected);
         double[] sigmas = new double[pSize];
             for (int j = 0; j < pSize; j++) {
-                for (int i = 0; i < sigmasOut.length; i++) {
-                    sigmas[j] += nextLayer.getPerceptrons().get(i)[j].getWeight() * sigmasOut[i];
+                for (int i = 0; i < sigmasOut.getRowDimension(); i++) {
+//                    sigmas[j] += nextLayer.getPerceptrons().get(i)[j].getWeight() * sigmasOut[i];
                 }
-            sigmas[j] *= derivativeActivation(input[j]);
+//            sigmas[j] *= derivativeActivation(input[j]);
             }
-        return sigmas;
+        return new Matrix(sigmas, 1);
     }
 
     protected void adjustWeights(double[] out, double[] sigma) {
         double[] dels = new double[prevLayer.pSize];
         for (int i = 0; i < sigma.length; i++) {
-            Perceptron[] ps = perceptrons.get(i);
-            double[] prevDels = getLastDeltas(i);
-            for (int j = 0; j < ps.length ; j++) {
-                dels[j] = ((1-Consts.rate) * Consts.speed * (sigma[i] * out[i])) + (Consts.rate * prevDels[j]);
-                ps[j].setWeight(ps[j].getWeight() + dels[j]);
+//            Perceptron[] ps = perceptrons.get(i);
+//            double[] prevDels = getLastDeltas(i);
+//            for (int j = 0; j < ps.length ; j++) {
+//                dels[j] = ((1-Consts.rate) * Consts.speed * (sigma[i] * out[i])) + (Consts.rate * prevDels[j]);
+//                ps[j].setWeight(ps[j].getWeight() + dels[j]);
+//            }
+//            setLastDeltas(i, dels);
+        }
+    }
+
+//    protected double[] getLastDeltas(int i) {
+//        try {
+//            return deltas.get(i).getLast();
+//        } catch (Exception e) {
+//            return new double[prevLayer.pSize];
+//        }
+//    }
+
+//    protected void setLastDeltas(int i, double[] dels) {
+//        LinkedList<double[]> iDeltas = deltas.get(i);
+//        if(iDeltas.size() > 10) {
+//            iDeltas.removeFirst();
+//        }
+//        iDeltas.addLast(dels);
+//    }
+
+    protected Matrix sum(Matrix input) {
+        return perceptrons.times(input);
+    }
+
+
+    public Matrix activation(Matrix a) {
+        Matrix res = a.copy();
+        for(int i = 0; i < res.getRowDimension(); i++) {
+            for (int j = 0; j < res.getColumnDimension(); j++) {
+                res.set(i, j, activation(res.get(i, j)));
             }
-            setLastDeltas(i, dels);
-        }
-    }
-
-    protected double[] getLastDeltas(int i) {
-        try {
-            return deltas.get(i).getLast();
-        } catch (Exception e) {
-            return new double[perceptrons.get(0).length];
-        }
-    }
-
-    protected void setLastDeltas(int i, double[] dels) {
-        LinkedList<double[]> iDeltas = deltas.get(i);
-        if(iDeltas.size() > 10) {
-            iDeltas.removeFirst();
-        }
-        iDeltas.addLast(dels);
-    }
-
-    protected double[] sums(double[] input) {
-        double[] sums = new double[pSize];
-        for (int i = 0; i < pSize; i++) {
-            sums[i] = sum(perceptrons.get(i), input);
-        }
-        return sums;
-    }
-
-    protected double sum(Perceptron[] ps, double[] input) {
-        double sum = 0.0;
-        for (int i = 0; i < prevLayer.pSize; i++) {
-            sum += ps[i].getWeight() * input[i];
-        }
-        return sum;
-    }
-
-    public double[] activation(double[] sums) {
-        double[] res = new double[sums.length];
-        for (int i = 0; i < sums.length; i++) {
-            res[i] = activation(sums[i]);
         }
         return res;
     }
@@ -156,7 +145,7 @@ public class Layer {
         } else {
             res += "null | ";
         }
-        res += " -- " + perceptrons.size();
+        res += " -- " + perceptrons.getColumnDimension();
         return res;
     }
 

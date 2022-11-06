@@ -2,7 +2,7 @@ package ai.util;
 
 public class Consts {
 
-    public static final Integer layersCount = 3;
+    public static final Integer layersCount = 2;
 
     public static final Integer selectionSize = 1_000;
 
