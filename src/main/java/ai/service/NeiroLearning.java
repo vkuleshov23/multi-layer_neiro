@@ -1,6 +1,7 @@
 package ai.service;
 
 import ai.event.LearnEvent;
+import ai.event.OldLearnEvent;
 import ai.model.PerceptronOld;
 import ai.util.Consts;
 import ai.util.Randomizer;
@@ -47,38 +48,32 @@ public class NeiroLearning {
         return  ((double)(successPredict)/(double)(count));
     }
 
-    @EventListener(LearnEvent.class)
-    public void learn(LearnEvent learnEvent) {
-        NeiroOld neiroOld = learnEvent.getNeiroOld();
-        for (PerceptronOld perceptronOld : neiroOld.getPerceptronOlds()) {
-//            new Thread(() -> perceptronLearnCycle(neiro, perceptron)).start();
-            perceptronLearnCycle(neiroOld, perceptronOld);
+    public void learn(Neiro neiro, int pos) {
+        learnCycle(neiro, pos);
+    }
+
+    public void learnCycle(Neiro neiro, int pos) {
+        int epoch = (int)(Consts.selectionSize * (double)pos/2);
+        for (int i = 0; i < epoch; i++) {
+            learnOneImage(neiro);
         }
     }
 
-    public void perceptronLearnCycle(NeiroOld neiroOld, PerceptronOld perceptronOld) {
-//        logger.info("Start thread for perceptron " + perceptron.getPerceptronSymbol());
-        for (int i = 0; i < Consts.selectionSize; i++) {
-            learnPerceptron(neiroOld, perceptronOld);
-        }
-//        logger.info("End thread for perceptron " + perceptron.getPerceptronSymbol());
-    }
-
-    public void learnPerceptron(NeiroOld neiroOld, PerceptronOld perceptronOld) {
+    public void learnOneImage(Neiro neiro) {
         try {
             String patternSymbol = Randomizer.randSymbol();
             String imageName = imageService.getRandomImage(patternSymbol);
-            learnForImage(neiroOld, perceptronOld, imageName, patternSymbol);
+            learnForImage(neiro, imageName, patternSymbol);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void learnForImage(NeiroOld neiroOld, PerceptronOld perceptronOld, String imageName, String patternSymbol) {
+    private void learnForImage(Neiro neiro, String imageName, String patternSymbol) {
         try {
             Image image = fileController.loadImage(new File(imageName));
-            int[][] bitMap = imageService.imageForNeiro(image, perceptronOld.getPerceptronSymbol());
-            neiroOld.learn(perceptronOld, bitMap, imageService.getPixelSum(bitMap), patternSymbol);
+            int[][] bitMap = imageService.imageForNeiro(image);
+            neiro.learn(bitMap, imageService.getPixelSum(bitMap), patternSymbol);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

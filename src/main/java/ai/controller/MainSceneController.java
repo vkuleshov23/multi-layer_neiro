@@ -1,10 +1,10 @@
 package ai.controller;
 
-import ai.event.LearnEvent;
 import ai.service.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -26,6 +26,8 @@ import java.util.List;
 public class MainSceneController {
 
     @FXML
+    private LineChart<Integer, Double> chart;
+    @FXML
     private TextArea resPane;
     @FXML
     private TextField symbol;
@@ -41,12 +43,15 @@ public class MainSceneController {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    private int pos = 1;
+
     Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
     @FXML
     public void initialize() {
         writingPixels.setCanvas(canvas);
         writingPixels.clear();
+        ChartUpdater.init(chart);
     }
 
     public void clear(ActionEvent event) {
@@ -76,14 +81,11 @@ public class MainSceneController {
 
     public void punish(ActionEvent actionEvent) {
         try {
-//            int[][] bitMap = getBitMap();
-//            neiroOld.prise(bitMap, symbol.getText());
-//            neiroOld.print();
-//            predict(bitMap);
             int[][] bitMap = getBitMap();
             double referenceSum = imageService.getPixelSum(bitMap);
             neiro.learn(bitMap, referenceSum, symbol.getText());
             predict(bitMap);
+//            ChartUpdater.updateChart();
             logger.info("PUNISHED");
         } catch (Exception e) {
             logger.warn(e.getMessage());
@@ -92,7 +94,6 @@ public class MainSceneController {
 
     private  void predict(int[][] bitMap) {
         double referenceSum = imageService.getPixelSum(bitMap);
-//        List<Pair<String, Double>> predicts = neiroOld.getPredicts(bitMap, referenceSum);
         List<Pair<String, Double>> predicts = neiro.predict(bitMap, referenceSum);
         resPane.clear();
         predicts.forEach(p -> resPane.appendText(p.getKey() + " = " + String.format("%.5f",p.getValue()) + "\n"));
@@ -108,17 +109,21 @@ public class MainSceneController {
     }
 
     public void learn(ActionEvent actionEvent) throws Exception {
-        eventPublisher.publishEvent(new LearnEvent(this.neiroOld));
+        this.neiroLearning.learn(this.neiro, pos++);
+        ChartUpdater.printLossDot();
+        ChartUpdater.printAccDot();
         logger.info("LEARNED");
-
     }
 
     public void test(ActionEvent actionEvent) {
         try {
-            neiro.test();
-//            logger.info("LEARN PERCENT: " + neiroLearning.learnPercent(neiroOld));
+            logger.info("LEARN PERCENT: " + neiroLearning.learnPercent(neiroOld));
         } catch (Exception e) {
             logger.warn(e.getMessage());
         }
+    }
+
+    public void clearChart(ActionEvent actionEvent) {
+        ChartUpdater.clear();
     }
 }

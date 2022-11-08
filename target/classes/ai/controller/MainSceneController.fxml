@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 
-
-<AnchorPane
-        maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-        prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18"
-        xmlns:fx="http://javafx.com/fxml/1" fx:controller="ai.controller.MainSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="421.0" prefWidth="1082.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ai.controller.MainSceneController">
     <children>
-        <Canvas fx:id="canvas" width="320.0" height="320.0" style="-fx-border-color: black;" onMouseDragged="#onMouseDragged"/>
-        <Pane layoutX="319.0" prefHeight="400.0" prefWidth="281.0">
+        <Canvas fx:id="canvas" height="320.0" onMouseDragged="#onMouseDragged" style="-fx-border-color: black;" width="320.0" />
+        <Pane layoutX="319.0" prefHeight="419.0" prefWidth="291.0">
             <children>
                 <ScrollPane layoutX="41.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0">
                     <content>
                         <TextArea fx:id="resPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
                     </content>
                 </ScrollPane>
-                <Button layoutX="104.0" layoutY="299.0" mnemonicParsing="false" onAction="#save"  text="Сохранить" />
-                <Button layoutX="109.0" layoutY="340.0" mnemonicParsing="false" onAction="#learn"  text="Обучить" />
-                <Button layoutX="109.0" layoutY="380.0" mnemonicParsing="false" onAction="#test"  text="test" />
+                <Button layoutX="40.0" layoutY="299.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="95.0" text="Сохранить" />
+                <Button layoutX="153.0" layoutY="299.0" mnemonicParsing="false" onAction="#learn" prefHeight="25.0" prefWidth="95.0" text="Обучить" />
+                <Button layoutX="201.0" layoutY="332.0" mnemonicParsing="false" onAction="#test" prefHeight="25.0" prefWidth="52.0" text="test" />
                 <TextField fx:id="symbol" layoutX="67.0" layoutY="264.0" />
+            <Button layoutX="37.0" layoutY="332.0" mnemonicParsing="false" onAction="#clearChart" prefHeight="25.0" prefWidth="149.0" text="Очистить график" />
             </children>
         </Pane>
         <Pane layoutY="318.0" prefHeight="83.0" prefWidth="320.0">
             <children>
-                <Button onAction="#punish" layoutX="127.0" layoutY="29.0" mnemonicParsing="false" text="Наказать" textFill="#9e2d2d" />
-                <Button onAction="#clear" layoutX="240.0" layoutY="29.0" mnemonicParsing="false" text="Очистить" textFill="#231b6b" />
-                <Button onAction="#recognize" layoutX="14.0" layoutY="29.0" mnemonicParsing="false" text="Распознать" textFill="#338368" />
+                <Button layoutX="127.0" layoutY="29.0" mnemonicParsing="false" onAction="#punish" text="Наказать" textFill="#9e2d2d" />
+                <Button layoutX="240.0" layoutY="29.0" mnemonicParsing="false" onAction="#clear" text="Очистить" textFill="#231b6b" />
+                <Button layoutX="14.0" layoutY="29.0" mnemonicParsing="false" onAction="#recognize" text="Распознать" textFill="#338368" />
             </children>
         </Pane>
+      <LineChart fx:id="chart" createSymbols="false" layoutX="563.0" layoutY="10.0">
+        <xAxis>
+          <NumberAxis autoRanging="false" label="Epoch" lowerBound="0.0" side="BOTTOM" upperBound="51.0" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis autoRanging="false" lowerBound="0.0" side="LEFT" upperBound="1.0" />
+        </yAxis>
+      </LineChart>
     </children>
 </AnchorPane>

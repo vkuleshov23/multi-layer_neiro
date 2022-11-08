@@ -6,22 +6,20 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 
 @Setter
 @Getter
-public class SymbolNeuralNet {
+public class SymbolNeuralNet implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(SymbolNeuralNet.class);
 
     private final LinkedList<Layer> layers = new LinkedList<>();
 
-    private final String symbol;
-
-    public SymbolNeuralNet(String symbol) {
-        this.symbol = symbol;
+    public SymbolNeuralNet() {
         int size = Consts.xSize*Consts.ySize;
         Layer layer = new InputLayer(size);
         layers.add(layer); size /= 2;
@@ -32,12 +30,12 @@ public class SymbolNeuralNet {
         layers.add(new OutputLayer(layer));
     }
 
-    public double predict(int[][] bitmap, double referenceSum) {
-        return Arrays.stream(getInputLayer().predictSymbol(bitmap)).sum();
+    public double[] predict(int[][] bitmap, double referenceSum) {
+        return getInputLayer().predictSymbol(bitmap);
     }
 
-    public double learn(int[][] bitmap, double referenceSum, String writtenSymbol) {
-        return Arrays.stream(getInputLayer().learnSymbol(bitmap, createExpected(writtenSymbol))).sum();
+    public double[] learn(int[][] bitmap, double referenceSum, String writtenSymbol) {
+        return getInputLayer().learnSymbol(bitmap, createExpected(writtenSymbol));
     }
 
     private double[] createExpected(String writtenSymbol) {
@@ -61,7 +59,7 @@ public class SymbolNeuralNet {
     }
 
     public String toString() {
-        StringBuilder res = new StringBuilder("--- " + symbol + " ---\n");
+        StringBuilder res = new StringBuilder("---\n");
         for (Layer layer : layers) {
             res.append(layer.toString()).append("\n");
         }

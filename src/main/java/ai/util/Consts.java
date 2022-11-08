@@ -2,9 +2,9 @@ package ai.util;
 
 public class Consts {
 
-    public static final Integer layersCount = 3;
+    public static final Integer layersCount = 2;
 
-    public static final Integer selectionSize = 1_000;
+    public static final Integer selectionSize = 100;
 
     public static final Integer xSize = 32;
 
@@ -22,7 +22,7 @@ public class Consts {
 
     public static double rate = 0.7;
 
-    public static double speed = 0.4;
+    public static double speed = 0.01;
 
     public static double wrong_threshold = 0.0;
 
@@ -34,7 +34,8 @@ public class Consts {
 
     public static final String basicWay = "C:\\Users\\Вадим\\Desktop\\Study\\7 семестр\\AI_CS\\multi-layer_neiro\\";
 
-    public static final String neiroFile = basicWay + "neiro.ser";
+    public static final String neiroOldFile = basicWay + "neiro.ser";
+    public static final String neiroFile = basicWay + "multy-neiro.ser";
 
     public static final String dataset = basicWay + "DataSet" + fileSystemDelimiter;
 

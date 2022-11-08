@@ -1,6 +1,7 @@
 package ai.util;
 
 import ai.service.FileController;
+import ai.service.Neiro;
 import ai.service.NeiroOld;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -15,22 +16,32 @@ public class WriteSaveProgress {
 
     private final NeiroOld neiroOld;
 
+    private final Neiro neiro;
+
     private final FileController fileController;
 
     public void save() {
-        fileController.saveNeiro(neiroOld);
+        fileController.saveNeiroOld(neiroOld);
         neiroOld.print();
+        fileController.saveNeiro(neiro);
         logger.info("saved");
     }
 
     public void load() {
         try {
-            neiroOld.setPerceptronOlds(fileController.loadNeiro().getPerceptronOlds());
+            neiroOld.setPerceptronOlds(fileController.loadNeiroOld().getPerceptronOlds());
         } catch (Exception e) {
             logger.warn(e.getMessage());
             neiroOld.postConstruct();
+            neiroOld.print();
         }
-        neiroOld.print();
+        try {
+            neiro.setSymbolNeuralNet(fileController.loadNeiro().getSymbolNeuralNet());
+            logger.info(neiro.getSymbolNeuralNet().toString());
+        } catch (Exception e) {
+            neiro.postConstruct();
+            logger.error(e.getMessage());
+        }
         logger.info("loaded");
     }
 
