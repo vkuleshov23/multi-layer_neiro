@@ -1,16 +1,16 @@
 package ai.event;
 
-import ai.service.NeiroOld;
+import ai.service.Neiro;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 @Getter
 public class LearnEvent extends ApplicationEvent {
 
-    NeiroOld neiroOld;
+    Neiro neiro;
 
-    public LearnEvent(NeiroOld neiroOld) {
-        super(neiroOld);
-        this.neiroOld = neiroOld;
+    public LearnEvent(Neiro neiro) {
+        super(neiro);
+        this.neiro = neiro;
     }
 }

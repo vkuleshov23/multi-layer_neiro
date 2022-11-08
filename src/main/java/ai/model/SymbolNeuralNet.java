@@ -6,13 +6,14 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 
 @Setter
 @Getter
-public class SymbolNeuralNet {
+public class SymbolNeuralNet implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(SymbolNeuralNet.class);
 

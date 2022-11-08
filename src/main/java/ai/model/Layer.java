@@ -7,9 +7,11 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class Layer {
+public class Layer implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(Layer.class);
 
@@ -28,7 +30,7 @@ public class Layer {
         this.prevLayer = prevLayer;
         prevLayer.setNextLayer(this);
         perceptrons = new Matrix(this.pSize, prevLayer.pSize);
-        deltas = new Matrix(prevLayer.pSize, this.pSize);
+        deltas = new Matrix(this.pSize, prevLayer.pSize);
         randomizeMatrix();
     }
 
@@ -48,58 +50,49 @@ public class Layer {
 
     public Matrix predict(Matrix input) {
         Matrix out = activation(sum(input));
-        return nextLayer.predict(out);
+        if(this.nextLayer != null) {
+            return nextLayer.predict(out);
+        } else {
+            return out;
+        }
     }
 
     public Matrix learn(Matrix input, Matrix expected) {
         Matrix newInput = sum(input);
         Matrix out = activation(newInput);
         Matrix sigma = reversePropagation(expected, newInput, out);
-//        adjustWeights(newInput, sigma);
+        updateDeltas(input, sigma);
         return sigma;
     }
 
-
     protected Matrix reversePropagation(Matrix expected, Matrix input, Matrix out) {
         Matrix sigmasOut = nextLayer.learn(out, expected);
-        double[] sigmas = new double[pSize];
-            for (int j = 0; j < pSize; j++) {
-                for (int i = 0; i < sigmasOut.getRowDimension(); i++) {
-//                    sigmas[j] += nextLayer.getPerceptrons().get(i)[j].getWeight() * sigmasOut[i];
-                }
-//            sigmas[j] *= derivativeActivation(input[j]);
-            }
-        return new Matrix(sigmas, 1);
+        Matrix sigmas = new Matrix(pSize, 1);
+        sigmas = this.nextLayer.perceptrons.transpose().times(sigmasOut);
+        for (int j = 0; j < pSize; j++) {
+            sigmas.set(j, 0, sigmas.get(j, 0) * derivativeActivation(input.get(j, 0)));
+        }
+        return sigmas;
     }
 
-    protected void adjustWeights(double[] out, double[] sigma) {
-        double[] dels = new double[prevLayer.pSize];
-        for (int i = 0; i < sigma.length; i++) {
-//            Perceptron[] ps = perceptrons.get(i);
-//            double[] prevDels = getLastDeltas(i);
-//            for (int j = 0; j < ps.length ; j++) {
-//                dels[j] = ((1-Consts.rate) * Consts.speed * (sigma[i] * out[i])) + (Consts.rate * prevDels[j]);
-//                ps[j].setWeight(ps[j].getWeight() + dels[j]);
-//            }
-//            setLastDeltas(i, dels);
+    protected void updateDeltas(Matrix input, Matrix sigma) {
+        for (int i = 0; i < deltas.getRowDimension(); i++) {
+            for (int j = 0; j < deltas.getColumnDimension(); j++) {
+                deltas.set(i, j, (input.get(j, 0) * sigma.get(i, 0) * Consts.speed) );
+            }
         }
     }
 
-//    protected double[] getLastDeltas(int i) {
-//        try {
-//            return deltas.get(i).getLast();
-//        } catch (Exception e) {
-//            return new double[prevLayer.pSize];
-//        }
-//    }
-
-//    protected void setLastDeltas(int i, double[] dels) {
-//        LinkedList<double[]> iDeltas = deltas.get(i);
-//        if(iDeltas.size() > 10) {
-//            iDeltas.removeFirst();
-//        }
-//        iDeltas.addLast(dels);
-//    }
+    protected void adjustWeights() {
+        for (int i = 0; i < perceptrons.getRowDimension(); i++) {
+            for (int j = 0; j < perceptrons.getColumnDimension(); j++) {
+                perceptrons.set(i, j, perceptrons.get(i, j) - deltas.get(i, j) );
+            }
+        }
+        if(this.nextLayer != null) {
+            this.nextLayer.adjustWeights();
+        }
+    }
 
     protected Matrix sum(Matrix input) {
         return perceptrons.times(input);
@@ -120,19 +113,21 @@ public class Layer {
         return 1 / (1 + Math.exp(-sum));
     }
 
-    public double[] derivativeActivation(double[] weights) {
-        double[] res = new double[weights.length];
-        for (int i = 0; i < weights.length; i++) {
-            res[i] = derivativeActivation(weights[i]);
+    public double derivativeActivation(double weight) {
+        return activation(weight) * (1 - activation(weight));
+    }
+
+    public Matrix derivativeActivation(Matrix a) {
+        Matrix res = a.copy();
+        for(int i = 0; i < res.getRowDimension(); i++) {
+            for (int j = 0; j < res.getColumnDimension(); j++) {
+                res.set(i, j, derivativeActivation(res.get(i, j)));
+            }
         }
         return res;
     }
 
-    public double derivativeActivation(double weight) {
-        return activation(weight) - (1 - activation(weight));
-    }
-
-
+    @Override
     public String toString() {
         String res = this.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(this)) + " | ";
         if (prevLayer != null) {

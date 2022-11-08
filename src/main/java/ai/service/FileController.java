@@ -22,16 +22,29 @@ public class FileController {
 
 
 
-    public NeiroOld loadNeiro() throws Exception {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Consts.neiroFile));
+    public NeiroOld loadNeiroOld() throws Exception {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Consts.neiroOldFile));
         return (NeiroOld) ois.readObject();
     }
 
-    public void saveNeiro(NeiroOld neiroOld) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Consts.neiroFile));) {
+    public void saveNeiroOld(NeiroOld neiroOld) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Consts.neiroOldFile));) {
             oos.writeObject(neiroOld);
         } catch (IOException e) {
            logger.error(e.getMessage());
+        }
+    }
+
+    public Neiro loadNeiro() throws Exception {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(Consts.neiroFile));
+        return (Neiro) ois.readObject();
+    }
+
+    public void saveNeiro(Neiro neiro) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Consts.neiroFile));) {
+            oos.writeObject(neiro);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
         }
     }
 

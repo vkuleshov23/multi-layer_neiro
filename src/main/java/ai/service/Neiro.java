@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,17 +17,13 @@ import java.util.List;
 @Service
 @Getter
 @Setter
-public class Neiro {
+public class Neiro implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(Neiro.class);
 
-    private final SymbolNeuralNet symbolNeuralNet;
+    private SymbolNeuralNet symbolNeuralNet = new SymbolNeuralNet();
 
     private static final Comparator<Pair<String, Double>> comparator = (double1, double2) -> double2.getValue().compareTo(double1.getValue());
-
-    public Neiro() {
-        symbolNeuralNet = new SymbolNeuralNet();
-    }
 
     public List<Pair<String, Double>> predict(int[][] bitMap, double referenceSum) {
        return toRes(this.symbolNeuralNet.predict(bitMap, referenceSum));
@@ -45,7 +41,7 @@ public class Neiro {
         return predicts.stream().sorted(comparator).toList();
     }
 
-    public void test() {
-        System.out.println(symbolNeuralNet);
+    public void postConstruct() {
+        this.symbolNeuralNet = new SymbolNeuralNet();
     }
 }
