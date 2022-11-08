@@ -24,6 +24,8 @@ public class ChartUpdater {
 
     public static void init(LineChart<Integer, Double> charta) {
         chart = charta;
+        lossSeries.setName("Loss");
+        accSeries.setName("Accuracy");
         chart.getData().add(lossSeries);
         chart.getData().add(accSeries);
     }

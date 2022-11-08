@@ -36,10 +36,10 @@
         </Pane>
       <LineChart fx:id="chart" createSymbols="false" layoutX="563.0" layoutY="10.0">
         <xAxis>
-          <NumberAxis autoRanging="false" label="Loss" lowerBound="0.0" side="BOTTOM" upperBound="51.0" />
+          <NumberAxis autoRanging="false" label="Epoch" lowerBound="0.0" side="BOTTOM" upperBound="51.0" />
         </xAxis>
         <yAxis>
-          <NumberAxis autoRanging="false" label="Epoch" lowerBound="0.0" side="LEFT" upperBound="1.0" />
+          <NumberAxis autoRanging="false" lowerBound="0.0" side="LEFT" upperBound="1.0" />
         </yAxis>
       </LineChart>
     </children>

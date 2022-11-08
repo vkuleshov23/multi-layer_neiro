@@ -1,14 +1,24 @@
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/model/Perceptron.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/service/FileController.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/FxApplication.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/event/LearnEvent.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/util/Consts.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/service/NeiroLearning.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/service/Neiro.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/service/ImageService.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/AiMlApplication.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/controller/MainSceneController.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/service/WritingPixels.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/util/NewNeiroCreator.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/util/Randomizer.java
-/home/vadim/Labs/AI/neirones/AI_lab2/src/main/java/ai/util/WriteSaveProgress.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\controller\MainSceneController.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\NeiroOld.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\InputLayer.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\SymbolNeuralNet.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\AccChartUpdater.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\PerceptronOld.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\util\NewNeiroCreator.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\OutputLayer.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\Perceptron.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\event\OldLearnEvent.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\util\Randomizer.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\FileController.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\util\Consts.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\event\ChartUpdateEvent.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\ImageService.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\NeiroLearning.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\WritingPixels.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\util\WriteSaveProgress.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\model\Layer.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\FxApplication.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\event\LearnEvent.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\AiMlApplication.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\ChartUpdater.java
+C:\Users\Вадим\Desktop\Study\7 семестр\AI_CS\multi-layer_neiro\src\main\java\ai\service\Neiro.java
