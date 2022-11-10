@@ -15,16 +15,16 @@
         <Canvas fx:id="canvas" height="320.0" onMouseDragged="#onMouseDragged" style="-fx-border-color: black;" width="320.0" />
         <Pane layoutX="319.0" prefHeight="419.0" prefWidth="291.0">
             <children>
-                <ScrollPane layoutX="41.0" layoutY="37.0" prefHeight="200.0" prefWidth="200.0">
+                <ScrollPane layoutX="36.0" layoutY="21.0" prefHeight="248.0" prefWidth="222.0">
                     <content>
-                        <TextArea fx:id="resPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                        <TextArea fx:id="resPane" minHeight="0.0" minWidth="0.0" prefHeight="224.0" prefWidth="222.0" />
                     </content>
                 </ScrollPane>
-                <Button layoutX="40.0" layoutY="299.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="95.0" text="Сохранить" />
-                <Button layoutX="153.0" layoutY="299.0" mnemonicParsing="false" onAction="#learn" prefHeight="25.0" prefWidth="95.0" text="Обучить" />
-                <Button layoutX="201.0" layoutY="332.0" mnemonicParsing="false" onAction="#test" prefHeight="25.0" prefWidth="52.0" text="test" />
-                <TextField fx:id="symbol" layoutX="67.0" layoutY="264.0" />
-            <Button layoutX="37.0" layoutY="332.0" mnemonicParsing="false" onAction="#clearChart" prefHeight="25.0" prefWidth="149.0" text="Очистить график" />
+                <Button layoutX="32.0" layoutY="314.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="104.0" text="Сохранить" />
+                <Button layoutX="154.0" layoutY="314.0" mnemonicParsing="false" onAction="#learn" prefHeight="25.0" prefWidth="104.0" text="Обучить" />
+                <Button layoutX="202.0" layoutY="347.0" mnemonicParsing="false" onAction="#test" prefHeight="25.0" prefWidth="57.0" text="Тест" />
+                <TextField fx:id="symbol" layoutX="35.0" layoutY="276.0" prefHeight="25.0" prefWidth="222.0" />
+            <Button layoutX="32.0" layoutY="347.0" mnemonicParsing="false" onAction="#clearChart" prefHeight="25.0" prefWidth="155.0" text="Очистить график" />
             </children>
         </Pane>
         <Pane layoutY="318.0" prefHeight="83.0" prefWidth="320.0">

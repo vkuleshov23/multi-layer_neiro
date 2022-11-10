@@ -57,6 +57,11 @@ public class Layer implements Serializable {
         }
     }
 
+    public void test(Matrix input, Matrix expected) {
+        Matrix out = activation(sum(input));
+        nextLayer.test(out, expected);
+    }
+
     public Matrix learn(Matrix input, Matrix expected) {
         Matrix newInput = sum(input);
         Matrix out = activation(newInput);

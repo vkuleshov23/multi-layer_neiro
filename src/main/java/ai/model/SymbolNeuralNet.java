@@ -30,12 +30,16 @@ public class SymbolNeuralNet implements Serializable {
         layers.add(new OutputLayer(layer));
     }
 
-    public double[] predict(int[][] bitmap, double referenceSum) {
+    public double[] predict(int[][] bitmap) {
         return getInputLayer().predictSymbol(bitmap);
     }
 
-    public double[] learn(int[][] bitmap, double referenceSum, String writtenSymbol) {
+    public double[] learn(int[][] bitmap, String writtenSymbol) {
         return getInputLayer().learnSymbol(bitmap, createExpected(writtenSymbol));
+    }
+
+    public void test(int[][] bitmap, String writtenSymbol) {
+        getInputLayer().testSymbol(bitmap, createExpected(writtenSymbol));
     }
 
     private double[] createExpected(String writtenSymbol) {

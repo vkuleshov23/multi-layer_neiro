@@ -15,6 +15,10 @@ public class InputLayer extends Layer implements Serializable {
         return this.nextLayer.predict(bitMapToArray(bitmap)).transpose().getArray()[0];
     }
 
+    public void testSymbol(int[][] bitmap, double[] expected) {
+        this.nextLayer.test(bitMapToArray(bitmap), new Matrix(expected, expected.length));
+    }
+
     public double[] learnSymbol(int[][] bitmap, double[] expected) {
         double[] result = this.nextLayer.learn(bitMapToArray(bitmap), new Matrix(expected, expected.length)).getArray()[0];
         this.nextLayer.adjustWeights();

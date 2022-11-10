@@ -25,12 +25,16 @@ public class Neiro implements Serializable {
 
     private static final Comparator<Pair<String, Double>> comparator = (double1, double2) -> double2.getValue().compareTo(double1.getValue());
 
-    public List<Pair<String, Double>> predict(int[][] bitMap, double referenceSum) {
-       return toRes(this.symbolNeuralNet.predict(bitMap, referenceSum));
+    public List<Pair<String, Double>> predict(int[][] bitMap) {
+       return toRes(this.symbolNeuralNet.predict(bitMap));
     }
 
-    public List<Pair<String, Double>> learn(int[][] bitMap, double referenceSum, String symbol) {
-        return toRes(this.symbolNeuralNet.learn(bitMap, referenceSum, symbol));
+    public List<Pair<String, Double>> learn(int[][] bitMap, String symbol) {
+        return toRes(this.symbolNeuralNet.learn(bitMap, symbol));
+    }
+
+    public void test(int[][] bitMap, String symbol) {
+        this.symbolNeuralNet.test(bitMap, symbol);
     }
 
     private List<Pair<String, Double>> toRes(double[] predict) {

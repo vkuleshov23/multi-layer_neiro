@@ -4,7 +4,7 @@ public class Consts {
 
     public static final Integer layersCount = 2;
 
-    public static final Integer selectionSize = 100;
+    public static final Integer selectionSize = 10;
 
     public static final Integer xSize = 32;
 
@@ -22,13 +22,15 @@ public class Consts {
 
     public static double rate = 0.7;
 
+    public static double minThreshold = 0.2;
+    public static double maxThreshold = 0.8;
     public static double speed = 0.01;
 
     public static double wrong_threshold = 0.0;
 
     public static double recognize_threshold = 1.0;
 
-    public static final String[] symbols = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    public static final String[] symbols = {"=(", "=)", "=~", "(3", "-_-", "xD", "=0", "xO", "xP", "K", "K3"};
 
     public static final String fileSystemDelimiter = "\\";
 

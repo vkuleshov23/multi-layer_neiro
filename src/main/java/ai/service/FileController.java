@@ -53,7 +53,7 @@ public class FileController {
                 .map(name -> (Consts.dataset + dirName + Consts.fileSystemDelimiter + name)).toArray(String[]::new);
     }
 
-    public String[] getTestFileNames(String dirName) throws Exception {
+    public String[] getTestFileNames(String dirName) {
         return Arrays.stream(Objects.requireNonNull(new File(Consts.testset + dirName).list()))
                 .map(name -> (Consts.testset + dirName + Consts.fileSystemDelimiter + name)).toArray(String[]::new);
     }

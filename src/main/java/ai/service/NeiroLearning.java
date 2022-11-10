@@ -25,27 +25,18 @@ public class NeiroLearning {
 
     private final FileController fileController;
 
-    public double learnPercent(NeiroOld neiroOld) throws Exception {
-        int count = 0;
-        int successPredict = 0;
+    public void learnPercent(Neiro neiro) throws Exception {
         for (String symbol : Consts.symbols) {
             for (String imageName : fileController.getTestFileNames(symbol)) {
                 try {
                     Image image = fileController.loadImage(new File(imageName));
                     int[][] bitMap = imageService.imageForNeiro(image, symbol);
-                    Pair<String, Double> predicts =
-                            neiroOld.getPredicts(bitMap, imageService.getPixelSum(bitMap)).get(0);
-                    if (predicts.getKey().equals(symbol)) {
-                        successPredict++;
-                    }
-                    logger.info(predicts.getKey() + " : " + symbol);
-                    count++;
+                    neiro.test(bitMap, symbol);
                 } catch (Exception e) {
                     logger.warn(e.getMessage());
                 }
             }
         }
-        return  ((double)(successPredict)/(double)(count));
     }
 
     public void learn(Neiro neiro, int pos) {
@@ -53,7 +44,9 @@ public class NeiroLearning {
     }
 
     public void learnCycle(Neiro neiro, int pos) {
-        int epoch = (int)(Consts.selectionSize * (double)pos/2);
+//        int epoch = (int)(Consts.selectionSize * ((double)(pos*3)/(double)2));
+        int epoch = pos*pos*Consts.selectionSize;
+        logger.info("Epoch:{}", epoch);
         for (int i = 0; i < epoch; i++) {
             learnOneImage(neiro);
         }
@@ -73,7 +66,7 @@ public class NeiroLearning {
         try {
             Image image = fileController.loadImage(new File(imageName));
             int[][] bitMap = imageService.imageForNeiro(image);
-            neiro.learn(bitMap, imageService.getPixelSum(bitMap), patternSymbol);
+            neiro.learn(bitMap, patternSymbol);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

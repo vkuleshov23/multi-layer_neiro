@@ -43,7 +43,7 @@ public class MainSceneController {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    private int pos = 1;
+    private int pos = 0;
 
     Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
@@ -82,10 +82,8 @@ public class MainSceneController {
     public void punish(ActionEvent actionEvent) {
         try {
             int[][] bitMap = getBitMap();
-            double referenceSum = imageService.getPixelSum(bitMap);
-            neiro.learn(bitMap, referenceSum, symbol.getText());
+            neiro.learn(bitMap, symbol.getText());
             predict(bitMap);
-//            ChartUpdater.updateChart();
             logger.info("PUNISHED");
         } catch (Exception e) {
             logger.warn(e.getMessage());
@@ -93,8 +91,7 @@ public class MainSceneController {
     }
 
     private  void predict(int[][] bitMap) {
-        double referenceSum = imageService.getPixelSum(bitMap);
-        List<Pair<String, Double>> predicts = neiro.predict(bitMap, referenceSum);
+        List<Pair<String, Double>> predicts = neiro.predict(bitMap);
         resPane.clear();
         predicts.forEach(p -> resPane.appendText(p.getKey() + " = " + String.format("%.5f",p.getValue()) + "\n"));
     }
@@ -110,15 +107,21 @@ public class MainSceneController {
 
     public void learn(ActionEvent actionEvent) throws Exception {
         this.neiroLearning.learn(this.neiro, pos++);
-        ChartUpdater.printLossDot();
-        ChartUpdater.printAccDot();
         logger.info("LEARNED");
+        this.test(actionEvent);
     }
 
     public void test(ActionEvent actionEvent) {
         try {
-            logger.info("LEARN PERCENT: " + neiroLearning.learnPercent(neiroOld));
+            neiroLearning.learnPercent(neiro);
+            ChartUpdater.printLossDot();
+            ChartUpdater.printAccDot();
+            ChartUpdater.printPrecisionDot();
+            ChartUpdater.printRecallDot();
+            ChartUpdater.printF1Dot();
+            logger.info("TESTED");
         } catch (Exception e) {
+            e.printStackTrace();
             logger.warn(e.getMessage());
         }
     }
